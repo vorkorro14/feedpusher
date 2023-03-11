@@ -12,7 +12,6 @@ class Algorithm:
         self.b1 = b1
         self.b2 = b2
         self.b3 = b3
-        self.u = 0
         self.prev_m_point = Point(LINE_START_POINT)
         self.logger = logger
 
@@ -20,7 +19,7 @@ class Algorithm:
              target_line: LineString, line_orientation: float
              ) -> tuple:
         robot_pos = Point(robot.x, robot.y)
-        self.u = np.tan(robot.turn_angle) / robot.length
+        curvature = robot.get_trajectory_curvature()
         v_tilda = robot.orientation - line_orientation
         m_point = nearest_points(target_line, robot_pos)[0]
         self.logger.mpoints.append(m_point)
@@ -31,16 +30,16 @@ class Algorithm:
         z1 = int(np.sign(sigma)) * distance(m_point, robot_pos)
         self.prev_m_point = m_point
         z2 = np.sin(v_tilda)
-        z3 = np.cos(v_tilda) * self.u
+        z3 = np.cos(v_tilda) * curvature
         gamma = b1 * z1 + b2 * z2 + b3 * z3
         f = z2 * z3**2 / (1 - z2**2)
-        beta = np.cos(v_tilda) * (robot.length * self.u**2 + 1 / robot.length) / robot.velocity
+        beta = np.cos(v_tilda) * (robot.length * curvature**2 + 1 / robot.length) / robot.velocity
         V = (f + gamma)/beta
         V = np.clip(V, -robot.turn_velocity_constraint,
                     robot.turn_velocity_constraint)
         V = -V if abs(v_tilda) > np.pi/2 else V
-        delta = np.clip(robot.turn_angle + V, -robot.turn_angle_constraint,
+        turn_angle = np.clip(robot.turn_angle + V, -robot.turn_angle_constraint,
                         robot.turn_angle_constraint)
         self.logger.V_plot.append(V)
-        self.logger.delta_plot.append(delta)
-        return delta, self.u
+        self.logger.delta_plot.append(turn_angle)
+        return turn_angle

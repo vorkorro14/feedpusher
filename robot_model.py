@@ -17,11 +17,14 @@ class RobotModel:
         self.turn_angle_constraint = TURN_ANGLE_CONSTRAINT
         self.turn_velocity_constraint = TURN_VELOCITY_CONSTRAINT
 
-    def step(self, u, turn_angle):
-        self.orientation += self.velocity * u
+    def step(self, turn_angle):
+        self.orientation += self.velocity * self.get_trajectory_curvature()
         self.x += self.velocity * np.cos(self.orientation)
         self.y += self.velocity * np.sin(self.orientation)
         self.turn_angle = turn_angle
+
+    def get_trajectory_curvature(self):
+        return np.tan(self.turn_angle) / self.length
 
     @property
     def orientation(self):

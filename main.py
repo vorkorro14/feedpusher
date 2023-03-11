@@ -20,10 +20,10 @@ robot = RobotModel()
 
 for i in range(0, NSTEPS):
     # getting control
-    turn_angle, u = algorithm.step(robot, target_line, line_orientation)
+    turn_angle = algorithm.step(robot, target_line, line_orientation)
 
     # modeling
-    robot.step(u, turn_angle)
+    robot.step(turn_angle)
 
     # logging
     logger.robot_trajectory_x.append(robot.x)
