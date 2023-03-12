@@ -18,6 +18,7 @@ class Algorithm:
     def step(self, robot: RobotModel,
              target_line: LineString, line_orientation: float
              ) -> tuple:
+        # TODO: rewrite with better naming
         robot_pos = Point(robot.x, robot.y)
         curvature = robot.get_trajectory_curvature()
         v_tilda = robot.orientation - line_orientation

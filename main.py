@@ -6,6 +6,7 @@ from logger import Logger
 from algorithm import Algorithm
 from robot_model import RobotModel
 
+# TODO: own class for target trajectory
 # line definition
 target_line = LineString([LINE_START_POINT, LINE_END_POINT])
 line_orientation = np.arctan((LINE_END_POINT[1] - LINE_START_POINT[1]) /

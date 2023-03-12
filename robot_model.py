@@ -32,6 +32,7 @@ class RobotModel:
 
     @orientation.setter
     def orientation(self, value):
+        # TODO: do it in a better way
         self.__orientation = value
         if value > 2 * np.pi:
             self.__orientation = value - 2 * np.pi

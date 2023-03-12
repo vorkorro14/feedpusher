@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 
 class Logger:
     def __init__(self, nsteps):
+        # TODO: make it more flexible by adding an ability to add attributes 
         self.nsteps = nsteps
         self.robot_trajectory_x = []
         self.robot_trajectory_y = []
@@ -14,6 +15,7 @@ class Logger:
 
     def plot(self, target_line: LineString, line_orientation: float):
         # visualization
+        # TODO: rewrite
         fg_01 = plt.figure()
         ax_01 = plt.gca()
 
