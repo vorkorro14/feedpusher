@@ -1,5 +1,12 @@
+import sys
 import numpy as np
 from shapely import LineString
+
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+
+from main_window import MainWindow
 
 from conf import NSTEPS, LINE_START_POINT, LINE_END_POINT
 from logger import Logger
@@ -19,16 +26,26 @@ logger = Logger(NSTEPS)
 algorithm = Algorithm(logger)
 robot = RobotModel()
 
-for i in range(0, NSTEPS):
-    # getting control
-    turn_angle = algorithm.step(robot, target_line, line_orientation)
+app = QApplication(sys.argv)
 
-    # modeling
-    robot.step(turn_angle)
+window = MainWindow()
+window.show()
 
-    # logging
-    logger.robot_trajectory_x.append(robot.x)
-    logger.robot_trajectory_y.append(robot.y)
-    logger.robot_trajectory_orientation.append(robot.orientation)
+app.exec_()
 
-logger.plot(target_line, line_orientation)
+while True:
+    window.update()
+
+# for i in range(0, NSTEPS):
+#     # getting control
+#     turn_angle = algorithm.step(robot, target_line, line_orientation)
+
+#     # modeling
+#     robot.step(turn_angle)
+
+#     # logging
+#     logger.robot_trajectory_x.append(robot.x)
+#     logger.robot_trajectory_y.append(robot.y)
+#     logger.robot_trajectory_orientation.append(robot.orientation)
+
+#logger.plot(target_line, line_orientation)
