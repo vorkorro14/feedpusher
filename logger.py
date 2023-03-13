@@ -48,4 +48,4 @@ class Logger:
         ax_25.plot(range(0, self.nsteps),self.robot_trajectory_y)
         ax_25.plot([0,self.nsteps],target_line.xy[1])
 
-        plt.show()
+        fg_01.savefig("map.jpg")

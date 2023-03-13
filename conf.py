@@ -1,9 +1,9 @@
 # time
 NSTEPS = 200
 
-# line
-LINE_START_POINT = (0, 0)
-LINE_END_POINT = (40, 40)
+# Map params
+MAP_WIDTH = 500 # px
+MAP_HEIGHT = 500 # px
 
 # robot params
 ROBOT_START_X = 0

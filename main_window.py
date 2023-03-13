@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QThreadPool
 
+from conf import MAP_WIDTH, MAP_HEIGHT
 from robot import Robot
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -9,7 +10,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("MY APP")
 
         self.label = QtWidgets.QLabel()
-        canvas = QtGui.QPixmap(400, 300)
+        canvas = QtGui.QPixmap(MAP_WIDTH, MAP_HEIGHT)
         self.label.setPixmap(canvas)
         self.label.pixmap().fill(QtGui.QColor("white"))
         self.setCentralWidget(self.label)
@@ -36,5 +37,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def mouseReleaseEvent(self, e: QtGui.QMouseEvent) -> None:
         self.end_point = (e.x(), e.y())
-        robot_instance = Robot(self.start_point, self.end_point)
+
+        robot_instance = Robot(self.point_to_robot_point(self.start_point), 
+                               self.point_to_robot_point(self.end_point))
         self.threadpool.start(robot_instance)
+        self.threadpool.join()
+
+    def point_to_robot_point(self, point):
+        return (point[0], self.label.pixmap().height() - point[1])
