@@ -9,18 +9,19 @@ class MainWindow(QtWidgets.QMainWindow):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("MY APP")
 
-        self.label = QtWidgets.QLabel()
+        self.map = QtWidgets.QLabel()
         canvas = QtGui.QPixmap(MAP_WIDTH, MAP_HEIGHT)
-        self.label.setPixmap(canvas)
-        self.label.pixmap().fill(QtGui.QColor("white"))
-        self.setCentralWidget(self.label)
+        self.map.setPixmap(canvas)
+        self.map.pixmap().fill(QtGui.QColor("white"))
+        self.setCentralWidget(self.map)
+
         self.mouse_is_pressed = False
         self.start_point = None
         self.end_point = None
         self.threadpool = QThreadPool()
 
     def draw_line(self, x1, y1, x2, y2):
-        painter = QtGui.QPainter(self.label.pixmap())
+        painter = QtGui.QPainter(self.map.pixmap())
         pen = QtGui.QPen()
         pen.setWidth(2)
         painter.setPen(pen)
@@ -31,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.start_point = (e.x(), e.y())
 
     def mouseMoveEvent(self, e: QtGui.QMouseEvent) -> None:
-        self.label.pixmap().fill(QtGui.QColor("white"))
+        self.map.pixmap().fill(QtGui.QColor("white"))
         self.draw_line(*self.start_point, e.x(), e.y())
         self.update()
 
@@ -41,7 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
         robot_instance = Robot(self.point_to_robot_point(self.start_point), 
                                self.point_to_robot_point(self.end_point))
         self.threadpool.start(robot_instance)
-        self.threadpool.join()
+
 
     def point_to_robot_point(self, point):
-        return (point[0], self.label.pixmap().height() - point[1])
+        return (point[0], self.map.pixmap().height() - point[1])
