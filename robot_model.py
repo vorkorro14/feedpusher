@@ -1,4 +1,5 @@
 import numpy as np
+from abc import ABC, abstractmethod
 
 from conf import ROBOT_START_X, \
     ROBOT_START_Y, ROBOT_START_YAW, \
@@ -6,7 +7,8 @@ from conf import ROBOT_START_X, \
     TURN_ANGLE_CONSTRAINT, TURN_VELOCITY_CONSTRAINT
 
 
-class RobotModel:
+
+class RobotModel(ABC):
     def __init__(self):
         self.x = ROBOT_START_X
         self.y = ROBOT_START_Y
@@ -17,14 +19,30 @@ class RobotModel:
         self.turn_angle_constraint = TURN_ANGLE_CONSTRAINT
         self.turn_velocity_constraint = TURN_VELOCITY_CONSTRAINT
 
-    def step(self, turn_angle):
-        self.orientation += self.velocity * self.get_trajectory_curvature()
-        self.x += self.velocity * np.cos(self.orientation)
-        self.y += self.velocity * np.sin(self.orientation)
-        self.turn_angle = turn_angle
+    @abstractmethod
+    def step(self, turn_angle: float) -> tuple:
+        """Computes and applies changes of main model DOFs: \
+        x, y, orientation and turn_angle. 
+        I.e. this method implements evolution of the robot according to the model. 
 
-    def get_trajectory_curvature(self):
-        return np.tan(self.turn_angle) / self.length
+        Args:
+            turn_angle (float): control signal, how to turn wheels. \
+                Absolute position. Left side is positive.
+
+        Returns:
+            tuple: (x, y, orientation, turn_angle). Updated model DOFs
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_trajectory_curvature(self) -> float:
+        """Computes current curvature of robot trajectory according to \
+        its turn_angle
+
+        Returns:
+            float: current curvature of robot trajectory
+        """
+        raise NotImplementedError
 
     @property
     def orientation(self):
@@ -40,3 +58,14 @@ class RobotModel:
             self.__orientation = value + 2 * np.pi
         else:
             self.__orientation = value
+
+
+class CarRobotModel(RobotModel):
+    def step(self, turn_angle):
+        self.orientation += self.velocity * self.get_trajectory_curvature()
+        self.x += self.velocity * np.cos(self.orientation)
+        self.y += self.velocity * np.sin(self.orientation)
+        self.turn_angle = turn_angle
+
+    def get_trajectory_curvature(self):
+        return np.tan(self.turn_angle) / self.length
