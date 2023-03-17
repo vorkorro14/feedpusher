@@ -48,6 +48,12 @@ class RobotModel(ABC):
         """
         if turn_angle is None:
             turn_angle = self.turn_angle
+
+        turn_angle_delta = np.clip(turn_angle - self.turn_angle, -self.turn_velocity_constraint*timestep,
+                    self.turn_velocity_constraint*timestep)
+        turn_angle = np.clip(self.turn_angle + turn_angle_delta, -self.turn_angle_constraint,
+                        self.turn_angle_constraint)
+
         self._step(turn_angle, timestep)
         return self.state
 

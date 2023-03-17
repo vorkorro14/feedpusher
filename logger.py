@@ -40,4 +40,12 @@ class Logger:
         ax_23.title.set_text("V")
         ax_23.plot(range(0, len(self.V_plot)), self.V_plot)
 
+        ax_24 = fg_2.add_subplot(234)
+        ax_24.title.set_text("X")
+        ax_24.plot(range(0, len(self.robot_trajectory_x)), self.robot_trajectory_x)
+
+        ax_25 = fg_2.add_subplot(235)
+        ax_25.title.set_text("Y")
+        ax_25.plot(range(0, len(self.robot_trajectory_y)), self.robot_trajectory_y)
+
         plt.show()

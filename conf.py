@@ -1,5 +1,5 @@
 # time
-PLANNING_HORIZON = 10 # steps
+PLANNING_HORIZON = 5 # steps
 CONTROL_RATE = 10 # Hz
 
 TIMESTEP = 0.1 # seconds
@@ -19,6 +19,6 @@ TURN_ANGLE_CONSTRAINT = 0.3 # radian
 TURN_VELOCITY_CONSTRAINT = 0.13 # radian/s
 
 # algorithm params
-b1 = 0.5
+b1 = 0.7
 b2 = -5
-b3 = -10
+b3 = -8
