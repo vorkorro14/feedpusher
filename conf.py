@@ -1,5 +1,6 @@
 # time
-PLANNING_HORIZON = 200 # steps
+PLANNING_HORIZON = 10 # steps
+CONTROL_RATE = 10 # Hz
 
 TIMESTEP = 0.1 # seconds
 

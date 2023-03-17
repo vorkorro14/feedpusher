@@ -7,7 +7,6 @@ from conf import ROBOT_START_X, \
     TURN_ANGLE_CONSTRAINT, TURN_VELOCITY_CONSTRAINT, TIMESTEP
 
 
-
 class RobotModel(ABC):
     def __init__(self):
         self.x = ROBOT_START_X
@@ -19,21 +18,41 @@ class RobotModel(ABC):
         self.turn_angle_constraint = TURN_ANGLE_CONSTRAINT
         self.turn_velocity_constraint = TURN_VELOCITY_CONSTRAINT
 
-    @abstractmethod
-    def step(self, turn_angle: float, timestep: float=TIMESTEP) -> tuple:
-        """Computes and applies changes of main model DOFs: \
-        x, y, orientation and turn_angle. 
-        I.e. this method implements evolution of the robot according to the model. 
-
-        Args:
-            timestep (float): step in time in the future. \
-                What model state would be in timestep seconds.
-            turn_angle (float): control signal, how to turn wheels in radians. \
-                Absolute position. Left side is positive.
+    @property
+    def state(self) -> tuple:
+        """Returns current state of the model
 
         Returns:
-            tuple: (x, y, orientation, turn_angle). Updated model DOFs
+            tuple: (x, y, orientation, turn_angle). Current state.
         """
+        return self.x, self.y, self.__orientation, self.turn_angle
+
+    @state.setter
+    def state(self, value):
+        self.x, self.y, self.orientation, self.turn_angle = value
+
+    def step(self, turn_angle: float=None, timestep: float=TIMESTEP) -> tuple:
+        """Computes and applies changes of main model DOFs: \
+        x, y, orientation and turn_angle. 
+        I.e. this method implements evolution of the robot according to the model.
+
+        Args:
+            turn_angle (float): control signal, how to turn wheels in radians. \
+            Absolute position. Left side is positive. \
+            If no value provided, turn_angle is assumed as current turn_angle.
+
+            timestep (float): step in time in the future. \
+                What model state would be in timestep seconds.
+        Returns:
+            tuple: (x, y, orientation, turn_angle). Updated model DOFs. New state.
+        """
+        if turn_angle is None:
+            turn_angle = self.turn_angle
+        self._step(turn_angle, timestep)
+        return self.state
+
+    @abstractmethod
+    def _step(self, turn_angle, timestep):
         raise NotImplementedError
 
     @abstractmethod
@@ -63,21 +82,23 @@ class RobotModel(ABC):
 
 
 class CarRobotModel(RobotModel):
-    def step(self, turn_angle: float, timestep: float=TIMESTEP) -> tuple:
+    def _step(self, turn_angle, timestep):
         self.orientation += (self.velocity*timestep) * self.get_trajectory_curvature()
         self.x += (self.velocity*timestep) * np.cos(self.orientation)
         self.y += (self.velocity*timestep) * np.sin(self.orientation)
         self.turn_angle = turn_angle
+        return self.state
 
     def get_trajectory_curvature(self):
         return np.tan(self.turn_angle) / self.length
 
 class TwoSegmentsRobotModel(RobotModel):
-    def step(self, turn_angle: float, timestep: float=TIMESTEP) -> tuple:
+    def _step(self, turn_angle, timestep):
         self.orientation += (self.velocity*timestep) * self.get_trajectory_curvature()
         self.x += (self.velocity*timestep) * np.cos(self.orientation)
         self.y += (self.velocity*timestep) * np.sin(self.orientation)
         self.turn_angle = turn_angle
+        return self.state
 
     def get_trajectory_curvature(self):
         return np.tan(self.turn_angle / 2) / (self.length / 2)
