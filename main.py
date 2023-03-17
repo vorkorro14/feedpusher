@@ -8,8 +8,6 @@ from PyQt5.QtCore import *
 
 from main_window import MainWindow
 
-# TODO: own class for target trajectory
-
 app = QApplication(sys.argv)
 
 window = MainWindow()
