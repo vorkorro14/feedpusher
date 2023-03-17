@@ -37,7 +37,7 @@ class Algorithm:
         f = z2 * z3**2 / (1 - z2**2)
         beta = np.cos(v_tilda) * (robot.length * curvature**2 + 1 / robot.length) / (robot.velocity*timestep)
         V = (f + gamma)/beta
-        V = np.clip(V*timestep, -robot.turn_velocity_constraint*timestep,
+        V = np.clip(V, -robot.turn_velocity_constraint*timestep,
                     robot.turn_velocity_constraint*timestep)
         V = -V if abs(v_tilda) > np.pi/2 else V
         turn_angle = np.clip(robot.turn_angle + V, -robot.turn_angle_constraint,
