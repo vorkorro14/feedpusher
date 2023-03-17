@@ -1,5 +1,6 @@
 from shapely import LineString
 import matplotlib.pyplot as plt
+from conf import MAP_HEIGHT, MAP_WIDTH
 
 
 class Logger:
@@ -17,7 +18,8 @@ class Logger:
         # TODO: rewrite
         fg_01 = plt.figure()
         ax_01 = plt.gca()
-
+        ax_01.set_xlim(MAP_WIDTH)
+        ax_01.set_ylim(MAP_HEIGHT)
         ax_01.plot(self.robot_trajectory_x,self.robot_trajectory_y,label='Robot Path')
         ax_01.plot(target_line.xy[0],target_line.xy[1],label='Desired Path')
         #ax_01.plot([p.x for p in mpoints], [p.y for p in mpoints],label='Points')
@@ -48,4 +50,5 @@ class Logger:
         ax_25.title.set_text("Y")
         ax_25.plot(range(0, len(self.robot_trajectory_y)), self.robot_trajectory_y)
 
-        plt.show()
+        fg_01.savefig("map.jpg")
+        fg_2.savefig("logs.jpg")

@@ -2,18 +2,16 @@ import numpy as np
 from shapely import Point, LineString, distance
 from shapely.ops import nearest_points
 
-from conf import b1, b2, b3, LINE_START_POINT, TIMESTEP
+from conf import b1, b2, b3, TIMESTEP
 from robot_model import RobotModel
-from logger import Logger
 
 
 class Algorithm:
-    def __init__(self, logger: Logger):
+    def __init__(self):
         self.b1 = b1
         self.b2 = b2
         self.b3 = b3
-        self.prev_m_point = Point(LINE_START_POINT)
-        self.logger = logger
+        self.prev_m_point = Point(0, 0)
 
     def step(self, robot: RobotModel,
              target_line: LineString, line_orientation: float,
