@@ -7,8 +7,8 @@ class Logger:
         # TODO: make it more flexible by adding an ability to add attributes 
         self.robot_trajectory_x = []
         self.robot_trajectory_y = []
-        self.V_plot = []
-        self.delta_plot = []
+        self.turn_velocity = []
+        self.turn_angle = []
         self.robot_trajectory_orientation = []
         self.mpoints = []
 
@@ -33,12 +33,12 @@ class Logger:
                    [line_orientation for j in range(0, nsteps)])
 
         ax_22 = fg_2.add_subplot(232)
-        ax_22.title.set_text("Delta")
-        ax_22.plot(range(0, len(self.delta_plot)), self.delta_plot)
+        ax_22.title.set_text("Turn angle")
+        ax_22.plot(range(0, len(self.turn_angle)), self.turn_angle)
 
         ax_23 = fg_2.add_subplot(233)
-        ax_23.title.set_text("V")
-        ax_23.plot(range(0, len(self.V_plot)), self.V_plot)
+        ax_23.title.set_text("Turn velocity")
+        ax_23.plot(range(0, len(self.turn_velocity)), self.turn_velocity)
 
         ax_24 = fg_2.add_subplot(234)
         ax_24.title.set_text("X")
