@@ -1,10 +1,10 @@
 import numpy as np
 from shapely import LineString
 
-from conf import NSTEPS, LINE_START_POINT, LINE_END_POINT
+from conf import PLANNING_HORIZON, LINE_START_POINT, LINE_END_POINT
 from logger import Logger
 from algorithm import Algorithm
-from robot_model import RobotModel
+from robot_model import CarRobotModel
 
 # TODO: own class for target trajectory
 # line definition
@@ -15,11 +15,11 @@ line_orientation = np.arctan((LINE_END_POINT[1] - LINE_START_POINT[1]) /
 
 # initilizing Logger
 
-logger = Logger(NSTEPS)
+logger = Logger(PLANNING_HORIZON)
 algorithm = Algorithm(logger)
-robot = RobotModel()
+robot = CarRobotModel()
 
-for i in range(0, NSTEPS):
+for i in range(0, PLANNING_HORIZON):
     # getting control
     turn_angle = algorithm.step(robot, target_line, line_orientation)
 

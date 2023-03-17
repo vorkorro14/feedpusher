@@ -2,7 +2,7 @@ import numpy as np
 from shapely import Point, LineString, distance
 from shapely.ops import nearest_points
 
-from conf import b1, b2, b3, LINE_START_POINT
+from conf import b1, b2, b3, LINE_START_POINT, TIMESTEP
 from robot_model import RobotModel
 from logger import Logger
 
@@ -16,13 +16,14 @@ class Algorithm:
         self.logger = logger
 
     def step(self, robot: RobotModel,
-             target_line: LineString, line_orientation: float
-             ) -> tuple:
+             target_line: LineString, line_orientation: float,
+             timestep=TIMESTEP) -> tuple:
         # TODO: rewrite with better naming
         robot_pos = Point(robot.x, robot.y)
         curvature = robot.get_trajectory_curvature()
         v_tilda = robot.orientation - line_orientation
         m_point = nearest_points(target_line, robot_pos)[0]
+        print(m_point)
         self.logger.mpoints.append(m_point)
         # print(nearest_points(target_line, robot_pos))
         ds = distance(m_point, self.prev_m_point)
@@ -34,10 +35,10 @@ class Algorithm:
         z3 = np.cos(v_tilda) * curvature
         gamma = b1 * z1 + b2 * z2 + b3 * z3
         f = z2 * z3**2 / (1 - z2**2)
-        beta = np.cos(v_tilda) * (robot.length * curvature**2 + 1 / robot.length) / robot.velocity
+        beta = np.cos(v_tilda) * (robot.length * curvature**2 + 1 / robot.length) / (robot.velocity*timestep)
         V = (f + gamma)/beta
-        V = np.clip(V, -robot.turn_velocity_constraint,
-                    robot.turn_velocity_constraint)
+        V = np.clip(V*timestep, -robot.turn_velocity_constraint*timestep,
+                    robot.turn_velocity_constraint*timestep)
         V = -V if abs(v_tilda) > np.pi/2 else V
         turn_angle = np.clip(robot.turn_angle + V, -robot.turn_angle_constraint,
                         robot.turn_angle_constraint)

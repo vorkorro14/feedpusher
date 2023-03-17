@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from conf import ROBOT_START_X, \
     ROBOT_START_Y, ROBOT_START_YAW, \
     ROBOT_VELOCITY, ROBOT_LENGTH, \
-    TURN_ANGLE_CONSTRAINT, TURN_VELOCITY_CONSTRAINT
+    TURN_ANGLE_CONSTRAINT, TURN_VELOCITY_CONSTRAINT, TIMESTEP
 
 
 
@@ -20,13 +20,15 @@ class RobotModel(ABC):
         self.turn_velocity_constraint = TURN_VELOCITY_CONSTRAINT
 
     @abstractmethod
-    def step(self, turn_angle: float) -> tuple:
+    def step(self, turn_angle: float, timestep: float=TIMESTEP) -> tuple:
         """Computes and applies changes of main model DOFs: \
         x, y, orientation and turn_angle. 
         I.e. this method implements evolution of the robot according to the model. 
 
         Args:
-            turn_angle (float): control signal, how to turn wheels. \
+            timestep (float): step in time in the future. \
+                What model state would be in timestep seconds.
+            turn_angle (float): control signal, how to turn wheels in radians. \
                 Absolute position. Left side is positive.
 
         Returns:
@@ -61,10 +63,10 @@ class RobotModel(ABC):
 
 
 class CarRobotModel(RobotModel):
-    def step(self, turn_angle):
-        self.orientation += self.velocity * self.get_trajectory_curvature()
-        self.x += self.velocity * np.cos(self.orientation)
-        self.y += self.velocity * np.sin(self.orientation)
+    def step(self, turn_angle: float, timestep: float=TIMESTEP) -> tuple:
+        self.orientation += (self.velocity*timestep) * self.get_trajectory_curvature()
+        self.x += (self.velocity*timestep) * np.cos(self.orientation)
+        self.y += (self.velocity*timestep) * np.sin(self.orientation)
         self.turn_angle = turn_angle
 
     def get_trajectory_curvature(self):
