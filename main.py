@@ -15,7 +15,7 @@ line_orientation = np.arctan((LINE_END_POINT[1] - LINE_START_POINT[1]) /
 
 # initilizing Logger
 
-logger = Logger(PLANNING_HORIZON)
+logger = Logger()
 algorithm = Algorithm(logger)
 robot = TwoSegmentsRobotModel()
 
