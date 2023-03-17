@@ -43,5 +43,4 @@ class Algorithm:
                         robot.turn_angle_constraint)
         self.logger.V_plot.append(V)
         self.logger.delta_plot.append(turn_angle)
-        #return turn_angle
-        return robot.turn_angle_constraint
+        return turn_angle

@@ -4,7 +4,7 @@ from shapely import LineString
 from conf import NSTEPS, LINE_START_POINT, LINE_END_POINT
 from logger import Logger
 from algorithm import Algorithm
-from robot_model import RobotModel
+from robot_model import TwoSegmentsRobotModel
 
 # TODO: own class for target trajectory
 # line definition
@@ -17,7 +17,7 @@ line_orientation = np.arctan((LINE_END_POINT[1] - LINE_START_POINT[1]) /
 
 logger = Logger(NSTEPS)
 algorithm = Algorithm(logger)
-robot = RobotModel()
+robot = TwoSegmentsRobotModel()
 
 for i in range(0, NSTEPS):
     # getting control

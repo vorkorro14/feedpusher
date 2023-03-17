@@ -69,3 +69,13 @@ class CarRobotModel(RobotModel):
 
     def get_trajectory_curvature(self):
         return np.tan(self.turn_angle) / self.length
+
+class TwoSegmentsRobotModel(RobotModel):
+    def step(self, turn_angle):
+        self.orientation += self.velocity * self.get_trajectory_curvature()
+        self.x += self.velocity * np.cos(self.orientation)
+        self.y += self.velocity * np.sin(self.orientation)
+        self.turn_angle = turn_angle
+
+    def get_trajectory_curvature(self):
+        return np.tan(self.turn_angle / 2) / (self.length / 2)
