@@ -29,6 +29,7 @@ class Robot(QRunnable):
     @pyqtSlot()
     def run(self):
         for global_step_counter in range(SIMULATION_MAX_STEPS):
+            print(f"STEP: {global_step_counter}")
             # reading data from sensors
             self.robot_model.state = self.real_robot.state
 
@@ -45,7 +46,6 @@ class Robot(QRunnable):
                     # modeling
                     self.robot_model.step(turn_angle)
                     trajectory_plan.append(turn_angle)
-            print(global_step_counter)
             # sending plan to robot 
             turn_angle_command = trajectory_plan.pop(-1)
             self.real_robot.step(turn_angle=turn_angle_command)  
